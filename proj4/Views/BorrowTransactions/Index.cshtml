@@ -13,6 +13,12 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.BookId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MemberId)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.BorrowDate)
             </th>
             <th>
@@ -27,6 +33,12 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MemberId)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.BorrowDate)
             </td>
@@ -37,9 +49,9 @@
                 @Html.DisplayFor(modelItem => item.Penalty)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a class=" btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a class=" btn btn-outline-info" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a class=" btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

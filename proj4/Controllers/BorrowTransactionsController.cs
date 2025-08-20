@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using proj4.Models;
 using proj4.data;
+
+using proj4.Models;
 
 namespace proj4.Controllers
 {
     public class BorrowTransactionsController : Controller
     {
-        private readonly LibraryContext _context;
+        private readonly LibraryContext _context ;
 
-        public BorrowTransactionsController(LibraryContext context)
+        public BorrowTransactionsController(LibraryContext  context)
         {
             _context = context;
         }
@@ -22,19 +19,26 @@ namespace proj4.Controllers
         // GET: BorrowTransactions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.BorrowTransactions.ToListAsync());
+            var borrowTransactions = _context.BorrowTransactions
+                .Include(b => b.Book)
+                .Include(b => b.Member);
+
+            return View(await borrowTransactions.ToListAsync());
         }
 
         // GET: BorrowTransactions/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.BorrowTransactions == null)
             {
                 return NotFound();
             }
 
             var borrowTransaction = await _context.BorrowTransactions
+                .Include(b => b.Book)
+                .Include(b => b.Member)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (borrowTransaction == null)
             {
                 return NotFound();
@@ -46,17 +50,15 @@ namespace proj4.Controllers
         // GET: BorrowTransactions/Create
         public IActionResult Create()
         {
-            ViewBag.BookId = new SelectList(_context.Books.ToList(), "Id", "Title");
-            ViewBag.MemberId = new SelectList(_context.Members.ToList(), "Id", "Name");
+            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Title");
+            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "Name");
             return View();
         }
 
         // POST: BorrowTransactions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BookId,MemberId,BorrowDate,DaysLate,Penalty")] BorrowTransaction borrowTransaction)
+        public async Task<IActionResult> Create([Bind("Id,BookId,MemberId,BorrowDate,DaysLate,Penalty")] BorrowTransaction borrowTransaction)
         {
             if (ModelState.IsValid)
             {
@@ -65,16 +67,15 @@ namespace proj4.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // إذا حصل خطأ نرجع نفس الـ View مع الـ SelectLists
-            ViewBag.BookId = new SelectList(_context.Books.ToList(), "Id", "Title", borrowTransaction.BookId);
-            ViewBag.MemberId = new SelectList(_context.Members.ToList(), "Id", "Name", borrowTransaction.MemberId);
+            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Title", borrowTransaction.BookId);
+            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "Name", borrowTransaction.MemberId);
             return View(borrowTransaction);
         }
 
         // GET: BorrowTransactions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.BorrowTransactions == null)
             {
                 return NotFound();
             }
@@ -84,15 +85,17 @@ namespace proj4.Controllers
             {
                 return NotFound();
             }
+
+            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Title", borrowTransaction.BookId);
+            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "Name", borrowTransaction.MemberId);
+
             return View(borrowTransaction);
         }
 
         // POST: BorrowTransactions/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BorrowDate,DaysLate,Penalty")] BorrowTransaction borrowTransaction)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BookId,MemberId,BorrowDate,DaysLate,Penalty")] BorrowTransaction borrowTransaction)
         {
             if (id != borrowTransaction.Id)
             {
@@ -119,19 +122,26 @@ namespace proj4.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Title", borrowTransaction.BookId);
+            ViewData["MemberId"] = new SelectList(_context.Members, "Id", "Name", borrowTransaction.MemberId);
+
             return View(borrowTransaction);
         }
 
         // GET: BorrowTransactions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.BorrowTransactions == null)
             {
                 return NotFound();
             }
 
             var borrowTransaction = await _context.BorrowTransactions
+                .Include(b => b.Book)
+                .Include(b => b.Member)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (borrowTransaction == null)
             {
                 return NotFound();
@@ -145,6 +155,11 @@ namespace proj4.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (_context.BorrowTransactions == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.BorrowTransactions' is null.");
+            }
+
             var borrowTransaction = await _context.BorrowTransactions.FindAsync(id);
             if (borrowTransaction != null)
             {
@@ -157,7 +172,7 @@ namespace proj4.Controllers
 
         private bool BorrowTransactionExists(int id)
         {
-            return _context.BorrowTransactions.Any(e => e.Id == id);
+            return (_context.BorrowTransactions?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

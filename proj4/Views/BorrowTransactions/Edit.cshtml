@@ -14,6 +14,16 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
+                <label asp-for="BookId" class="control-label"></label>
+                <input asp-for="BookId" class="form-control" />
+                <span asp-validation-for="BorrowDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MemberId" class="control-label"></label>
+                <input asp-for="MemberId" class="form-control" />
+                <span asp-validation-for="BorrowDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="BorrowDate" class="control-label"></label>
                 <input asp-for="BorrowDate" class="form-control" />
                 <span asp-validation-for="BorrowDate" class="text-danger"></span>

@@ -20,3 +20,9 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.nav-link:hover,
+.nav-link:hover {
+    transition: 0.3s;
+    color: red !important;
+}

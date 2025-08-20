@@ -10,9 +10,8 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+        <form asp-action="Create">
             <div class="form-group">
                 <label asp-for="BookId" class="control-label"></label>
                 <select asp-for="BookId" class="form-control" asp-items="ViewBag.BookId"></select>
@@ -25,26 +24,23 @@
 
             <div class="form-group">
                 <label asp-for="BorrowDate" class="control-label"></label>
-                <input asp-for="BorrowDate" class="form-control" />
-                <span asp-validation-for="BorrowDate" class="text-danger"></span>
+                <input asp-for="BorrowDate" class="form-control" type="date" />
             </div>
 
             <div class="form-group">
                 <label asp-for="DaysLate" class="control-label"></label>
                 <input asp-for="DaysLate" class="form-control" />
-                <span asp-validation-for="DaysLate" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Penalty" class="control-label"></label>
                 <input asp-for="Penalty" class="form-control" />
-                <span asp-validation-for="Penalty" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
         </form>
+        
 
     </div>
 </div>
