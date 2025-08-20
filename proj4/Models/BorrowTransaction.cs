@@ -15,7 +15,6 @@
         public Book? Book { get; set; }
         public Member? Member { get; set; }
 
-        // دالة لحساب الغرامة بناءً على نوع العضو
         public void CalculatePenalty()
         {
             if (Member == null)
@@ -34,7 +33,7 @@
             }
             else
             {
-                Penalty = DaysLate * 1; // قيمة افتراضية لأي نوع آخر
+                Penalty = DaysLate * 1; 
             }
         }
     }

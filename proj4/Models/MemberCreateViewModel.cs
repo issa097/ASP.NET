@@ -9,7 +9,7 @@ namespace proj4.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string MemberType { get; set; } = string.Empty; // Student or Teacher
+        public string MemberType { get; set; } = string.Empty; 
     }
 
 }
